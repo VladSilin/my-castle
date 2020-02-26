@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =7
+let g:netrw_dirhist_7='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src/main/java/com/capitalone/canadadynamicapps/apptier/rest/resources'
+let g:netrw_dirhist_6='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src/main/java/com/capitalone/canadadynamicapps/apptier/rest'
+let g:netrw_dirhist_5='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src/main/java/com/capitalone/canadadynamicapps/apptier'
+let g:netrw_dirhist_4='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src/main/java/com/capitalone/canadadynamicapps'
+let g:netrw_dirhist_3='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src/main/java/com/capitalone'
+let g:netrw_dirhist_2='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src/main/java/com'
+let g:netrw_dirhist_1='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src/main/java'
+let g:netrw_dirhist_0='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src/main'
+let g:netrw_dirhist_9='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web/src'
+let g:netrw_dirhist_8='/Users/rvq302/Workspaces/dynamic-app-canada-apptier/dynamic-app-canada-apptier-web'
