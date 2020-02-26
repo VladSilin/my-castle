@@ -10,6 +10,7 @@
 
 
 
+
 if v:progname =~? "evim"
   finish
 endif
@@ -163,6 +164,7 @@ nnoremap <leader>t :terminal<cr><C-w>:exe "resize " . (winheight(0) * 1/3)<CR>
 
 " Swap File Location Setup
 set swapfile
+" NOTE: This directory must be created manually
 set dir=~/tmp
 
 
@@ -212,6 +214,14 @@ noremap <Leader>P "+p
 
 " ****** Plug Plugin Manager Stuff Starts Here ******
 " ---------------------------------------------------
+
+" NOTE: To get the most out of these plugins:
+"   - Install the plugins with the Plug plugin manager
+"   - Look into setting up coc.nvim properly (to get any desired language server features)
+"   (https://github.com/neoclide/coc.nvim)
+"   - Get ripgrep and place 
+"       export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
+"     into the .bash_profile/.zshrc/etc. to use ripgrep for the fzf file search plugin
 
 call plug#begin('~/.vim/plugged')
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
