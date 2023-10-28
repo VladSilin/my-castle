@@ -10,7 +10,6 @@
 
 
 
-
 if v:progname =~? "evim"
   finish
 endif
@@ -128,6 +127,7 @@ set wildmenu
 " Set show list of buffers on command 'gb'
 nnoremap gb :ls<cr>:b<space>
 nnoremap gdb :ls<cr>:bd<space>
+nnoremap gvb :ls<cr>:vert sb<space>
 
 " Delete buffer without touching window split
 if !exists(":Bd")
@@ -138,9 +138,16 @@ endif
 " Do not highlight searches
 set nohlsearch
 
+" Show number of matches in search
+set shortmess-=S
+
 
 " Autosave Buffers
 set autowriteall
+
+
+" Keep buffer undo history
+set hidden
 
 
 " netrw (File Tree Browser) Config
@@ -164,7 +171,6 @@ nnoremap <leader>t :terminal<cr><C-w>:exe "resize " . (winheight(0) * 1/3)<CR>
 
 " Swap File Location Setup
 set swapfile
-" NOTE: This directory must be created manually
 set dir=~/tmp
 
 
@@ -215,16 +221,8 @@ noremap <Leader>P "+p
 " ****** Plug Plugin Manager Stuff Starts Here ******
 " ---------------------------------------------------
 
-" NOTE: To get the most out of these plugins:
-"   - Install the plugins with the Plug plugin manager
-"   - Look into setting up coc.nvim properly (to get any desired language server features)
-"   (https://github.com/neoclide/coc.nvim)
-"   - Get ripgrep and place 
-"       export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
-"     into the .bash_profile/.zshrc/etc. to use ripgrep for the fzf file search plugin
-
 call plug#begin('~/.vim/plugged')
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'dense-analysis/ale'
@@ -233,6 +231,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'zivyangll/git-blame.vim'
 Plug 'preservim/nerdtree'
+Plug 'alx741/vim-hindent'
 call plug#end()
 
 
@@ -285,4 +284,8 @@ nmap <F6> <Plug>(ale_fix)
 
 " Git Blame Config
 nnoremap <Leader>s :<C-u>call gitblame#echo()<CR>
+
+
+" Haskell Hindent Code format
+autocmd FileType haskell noremap = :Hindent<CR>
 

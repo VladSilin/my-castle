@@ -1,0 +1,35 @@
+{
+  "python.pythonPath": "python",
+  "suggest.enablePreview": true,
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextCurrentLineOnly": false,
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "black",
+  "languageserver": {
+    "haskell": {
+      "command": "haskell-language-server-wrapper",
+      "args": [
+	"--lsp"
+      ],
+      "rootPatterns": [
+	".stack.yaml",
+	".hie-bios",
+	"BUILD.bazel",
+	"cabal.config",
+	"package.yaml"
+	],
+	"filetypes": [
+	  "hs",
+	  "lhs",
+	  "haskell"
+	],
+	"initializationOptions": {
+	  "languageServerHaskell": {
+	    "hlintOn": true,
+	    "maxNumberOfProblems": 10,
+	    "completionSnippetsOn": true
+	  }
+	}
+    }
+  }
+}

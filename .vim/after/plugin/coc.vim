@@ -5,8 +5,12 @@ inoremap <silent><expr> <c-space> coc#refresh()
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 
+nmap <silent> gvd :vsplit<CR><Plug>(coc-definition)
+
 " gi - go to implementation
 nmap <silent> gi <Plug>(coc-implementation)
+
+nmap <silent> gvi :vsplit<CR><Plug>(coc-implementation)
 
 " gr - find references
 nmap <silent> gr <Plug>(coc-references)
