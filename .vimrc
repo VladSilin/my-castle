@@ -104,7 +104,6 @@ set t_Co=256
 
 " This one is NOT working
 "set termguicolors
-
 " Do this instead:
 " Set Vim-specific sequences for RGB colors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -231,6 +230,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'zivyangll/git-blame.vim'
 Plug 'preservim/nerdtree'
+Plug 'ryanoasis/vim-devicons'
 Plug 'alx741/vim-hindent'
 call plug#end()
 
@@ -257,6 +257,12 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " Set NerdTree size
 let g:NERDTreeWinSize = 40
 
+" Show hidden files by default
+let NERDTreeShowHidden=1
+
+" Required for icons in NerdTree using the vim-devicons plugin
+set encoding=UTF-8
+
 
 " Lightline Config
 set laststatus=2
@@ -275,8 +281,22 @@ nnoremap <Leader>h :History<CR>
 
 
 " ALE (Code Format) Config
-" Fix files with prettier, and then ESLint.
-let b:ale_fixers = ['prettier', 'eslint']
+" OLD: Fix files with prettier, and then ESLint.
+" let b:ale_fixers = ['prettier', 'eslint']
+" let b:ale_linters = ['prettier', 'eslint']
+let g:ale_fixers = {
+            \   'typescriptreact': ['eslint'],
+            \   'javascriptreact': ['eslint'],
+            \   'javascript': ['eslint'],
+            \   'typescript': ['eslint']
+            \}
+let g:ale_linters = {
+            \   'typescriptreact': ['eslint'],
+            \   'javascriptreact': ['eslint'],
+            \   'javascript': ['eslint'],
+            \   'typescript': ['eslint']
+            \}
+let g:ale_fix_on_save = 1
 let g:ale_sign_error = '!'
 let g:ale_sign_warning = '?'
 nmap <F6> <Plug>(ale_fix)
@@ -284,7 +304,6 @@ nmap <F6> <Plug>(ale_fix)
 
 " Git Blame Config
 nnoremap <Leader>s :<C-u>call gitblame#echo()<CR>
-
 
 " Haskell Hindent Code format
 autocmd FileType haskell noremap = :Hindent<CR>
