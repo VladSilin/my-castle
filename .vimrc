@@ -165,7 +165,7 @@ let g:netrw_winsize = 20
 " Terminal Command Setup
 set splitbelow
 set splitright
-nnoremap <leader>t :terminal<cr><C-w>:exe "resize " . (winheight(0) * 1/3)<CR>
+nnoremap <leader>t :terminal<cr><C-w>:exe "resize " . (winheight(0) * 2/3)<CR>
 
 
 " Swap File Location Setup
@@ -215,22 +215,51 @@ noremap <Leader>Y "+y
 noremap <Leader>P "+p
 
 
+" Fix redraw error
+syntax on
+set re=0
+
+
+" Autoclose brackets and quotes
+"inoremap { {}<Esc>ha
+"inoremap ( ()<Esc>ha
+"inoremap [ []<Esc>ha
+"inoremap " ""<Esc>ha
+"inoremap ' ''<Esc>ha
+"inoremap ` ``<Esc>ha
+
 
 
 " ****** Plug Plugin Manager Stuff Starts Here ******
 " ---------------------------------------------------
 
 call plug#begin('~/.vim/plugged')
+" FZF
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+
+" Polyglot (Syntax Highlighting)
+let g:polyglot_disabled = ['markdown']
 Plug 'sheerun/vim-polyglot'
-Plug 'dense-analysis/ale'
+
+" Language Analysis
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Quality of Life
 Plug 'yuttie/comfortable-motion.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'zivyangll/git-blame.vim'
+
+" NerdTree (File Explorer)
 Plug 'preservim/nerdtree'
 Plug 'ryanoasis/vim-devicons'
+
+" Markdown
+" https://codeinthehole.com/tips/writing-markdown-in-vim/
+Plug 'godlygeek/tabular'
+Plug 'preservim/vim-markdown'
+
+" Haskell
 Plug 'alx741/vim-hindent'
 call plug#end()
 
@@ -280,31 +309,48 @@ nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>h :History<CR>
 
 
-" ALE (Code Format) Config
-" OLD: Fix files with prettier, and then ESLint.
-" let b:ale_fixers = ['prettier', 'eslint']
-" let b:ale_linters = ['prettier', 'eslint']
-let g:ale_fixers = {
-            \   'typescriptreact': ['eslint'],
-            \   'javascriptreact': ['eslint'],
-            \   'javascript': ['eslint'],
-            \   'typescript': ['eslint']
-            \}
-let g:ale_linters = {
-            \   'typescriptreact': ['eslint'],
-            \   'javascriptreact': ['eslint'],
-            \   'javascript': ['eslint'],
-            \   'typescript': ['eslint']
-            \}
-let g:ale_fix_on_save = 1
-let g:ale_sign_error = '!'
-let g:ale_sign_warning = '?'
-nmap <F6> <Plug>(ale_fix)
-
-
 " Git Blame Config
 nnoremap <Leader>s :<C-u>call gitblame#echo()<CR>
 
-" Haskell Hindent Code format
-autocmd FileType haskell noremap = :Hindent<CR>
+
+" Copilot
+imap <silent> <C-j> <Plug>(copilot-next)
+imap <silent> <C-k> <Plug>(copilot-previous)
+imap <silent> <C-\> <Plug>(copilot-dismiss)
+
+
+" vim-markdown
+" Enable folding.
+let g:vim_markdown_folding_disabled = 0
+
+" Fold heading in with the contents.
+let g:vim_markdown_folding_style_pythonic = 1
+
+" Don't use the shipped key bindings.
+let g:vim_markdown_no_default_key_mappings = 1
+
+" Autoshrink TOCs.
+let g:vim_markdown_toc_autofit = 1
+
+" Indentation for new lists. We don't insert bullets as it doesn't play
+" nicely with `gq` formatting. It relies on a hack of treating bullets
+" as comment characters.
+" See https://github.com/plasticboy/vim-markdown/issues/232
+let g:vim_markdown_new_list_item_indent = 0
+let g:vim_markdown_auto_insert_bullets = 0
+
+" Filetype names and aliases for fenced code blocks.
+let g:vim_markdown_fenced_languages = ['php', 'py=python', 'js=javascript', 'bash=sh', 'viml=vim']
+
+" Highlight front matter (useful for Hugo posts).
+let g:vim_markdown_toml_frontmatter = 1
+let g:vim_markdown_json_frontmatter = 1
+let g:vim_markdown_frontmatter = 1
+
+" Format strike-through text (wrapped in `~~`).
+let g:vim_markdown_strikethrough = 1
+
+" Associate .md with Markdown
+au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
+
 
