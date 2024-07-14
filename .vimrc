@@ -243,6 +243,19 @@ let g:polyglot_disabled = ['markdown']
 Plug 'sheerun/vim-polyglot'
 
 " Language Analysis
+" CocList extensions:
+" * coc-snippets
+" * coc-prettier
+" * coc-eslint
+" * coc-emmet
+" + coc-tsserver 
+" + coc-pyright
+" + coc-json
+" + coc-java
+" + coc-css
+"
+" NOTE: For coc-snippets, see
+" https://www.reddit.com/r/vim/comments/gu5nm0/automatically_close_jsx_tags/
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Quality of Life
