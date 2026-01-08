@@ -70,7 +70,13 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(
+  git
+  #zsh-autosuggestions
+  #zsh-syntax-highlighting
+  #fast-syntax-highlighting
+  #zsh-autocomplete
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -116,6 +122,22 @@ alias ls='ls -GFh'
 # vim fzf Config
 export FZF_DEFAULT_COMMAND='rg --files --follow --hidden'
 
+# fzf shell integration (fuzzy completion and keybindings)
+source <(fzf --zsh)
+
+# fzf-git integration (git-specific fuzzy keybindings)
+# Download fzf-git.sh if not exists
+if [ ! -f ~/.fzf-git.sh ]; then
+  curl -fsSL -o ~/.fzf-git.sh https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh
+fi
+source ~/.fzf-git.sh
+
+
+# nvim Config
+# The `DBUS_SESSION_BUS_ADDRESS` environment variable must be set for Zathura to work with VimTeX; see [2] for details.
+export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
+# [2]: https://github.com/lervag/vimtex/issues/2391
+
 
 # Aliases
 alias doc='docker-compose'
@@ -134,6 +156,14 @@ alias gitcnv='git commit --no-verify'
 alias gitcanv='git commit --amend --no-verify'
 alias gitp='git push'
 alias gitpf='git push -f'
+
+alias config-zsh='nvim ~/.zshrc'
+alias config-tmux='nvim ~/.tmux.conf'
+
+alias config-nvim='cd ~/.config/nvim && nvim'
+alias cd-nvim='cd ~/.config/nvim'
+
+alias config-vim='vim ~/.vimrc'
 
 
 # nvm Stuff
@@ -158,3 +188,6 @@ export PATH="/opt/homebrew/opt/llvm@12/bin:/Users/vladsilin/.local/bin:$PATH"
 # Fix the Haskell linter install error with "ffitarget_arm64.h"
 export C_INCLUDE_PATH="`xcrun --show-sdk-path`/usr/include/ffi"
 
+
+# OpenRouter
+export OPENROUTER_API_KEY=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
