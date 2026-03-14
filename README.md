@@ -50,6 +50,27 @@ cd ~/Programming/my-castle && stow -R -t ~ git
 
 **Running processes need a restart after first stow.** Programs that loaded config before the symlink swap (e.g. Claude Code reading `settings.json`) won't pick up the new path until restarted.
 
+## Work laptop setup
+
+Clone and stow the universal packages:
+```bash
+git clone <repo-url> ~/Programming/my-castle
+cd ~/Programming/my-castle
+stow -t ~ vim tmux
+```
+
+Remove existing files that stow will replace before running:
+```bash
+rm ~/.vimrc ~/.tmux.conf
+rm -rf ~/.vim/after ~/.vim/autoload ~/.vim/colors ~/.vim/plugin ~/.vim/syntax ~/.vim/coc-settings.json
+rm -rf ~/.tmux/scripts ~/.tmux/README.md
+```
+
+Skip `shell` (work `.zshrc` will differ) and `claude` (not all settings apply). For individual files from skipped packages, symlink manually:
+```bash
+ln -s ~/Programming/my-castle/claude/.claude/statusline.sh ~/.claude/statusline.sh
+```
+
 ## Not managed here
 
 - `~/.config/nvim/` — separate git repo
