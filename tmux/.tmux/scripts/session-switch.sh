@@ -30,7 +30,7 @@ unbind_arg=""
 result=$(eval "printf '%s\n' \"\${hint[@]}\" | fzf --reverse \
   --header 'enter=switch, ctrl-x=kill' \
   $hotbinds $unbind_arg \
-  --bind \"ctrl-x:execute-silent(tmux kill-session -t {2})+reload(tmux list-sessions -F '#S')\"") || exit 0
+  --bind 'ctrl-x:execute-silent(tmux kill-session -t {2})+reload(~/.tmux/scripts/session-list-fmt.sh)'") || exit 0
 
 if [ ${#result} -eq 1 ]; then
   sess=$(echo "$sessions" | grep "^$result")

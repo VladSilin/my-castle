@@ -160,6 +160,15 @@ alias gitpf='git push -f'
 alias config-zsh='nvim ~/.zshrc'
 alias config-tmux='nvim ~/.tmux.conf'
 
+# Override bare `tmux` to launch the session-create picker
+tmux() {
+  if [ $# -eq 0 ]; then
+    ~/.tmux/scripts/session-create.sh "$PWD"
+  else
+    command tmux "$@"
+  fi
+}
+
 alias config-nvim='cd ~/.config/nvim && nvim'
 alias cd-nvim='cd ~/.config/nvim'
 
@@ -187,6 +196,6 @@ export PATH="/opt/homebrew/opt/llvm@12/bin:/Users/vladsilin/.local/bin:$PATH"
 export C_INCLUDE_PATH="`xcrun --show-sdk-path`/usr/include/ffi"
 
 
-# OpenRouter
-export OPENROUTER_API_KEY=none
+# OpenRouter (stored in macOS Keychain)
+export OPENROUTER_API_KEY=$(security find-generic-password -a "$USER" -s openrouter -w)
 
