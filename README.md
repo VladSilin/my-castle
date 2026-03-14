@@ -2,6 +2,10 @@
 
 Dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
+## How it works
+
+Stow creates symlinks from `~/` pointing into this repo. Each top-level directory is a "package" whose contents mirror the home directory structure. Running `stow -t ~ tmux` makes `~/.tmux.conf` a symlink to `tmux/.tmux.conf` in this repo — edits in either location are the same file.
+
 ## Packages
 
 | Package | Contents |
@@ -34,6 +38,17 @@ Re-stow (clean up stale symlinks + re-link):
 ```bash
 stow -R -t ~ shell git vim tmux claude
 ```
+
+## Gotchas
+
+**`git config --global` breaks the symlink.** Git writes a temp file and renames it, replacing the symlink with a regular file. After using `git config --global`, re-stow:
+```bash
+cd ~/Programming/my-castle && stow -R -t ~ git
+```
+
+**Atomic writers in general.** Any program that saves by writing a temp file + rename (rather than editing in place) will break the symlink for that file. If a dotfile stops being tracked, check with `ls -la` and re-stow the package.
+
+**Running processes need a restart after first stow.** Programs that loaded config before the symlink swap (e.g. Claude Code reading `settings.json`) won't pick up the new path until restarted.
 
 ## Not managed here
 

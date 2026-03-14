@@ -31,29 +31,38 @@ count_agent_panes() {
 pick_command() {
   local header="$1"
   local cmds="$2"
-  local keys expect hint result key sel cmd
+  local result key sel cmd
 
-  keys=$(echo "$cmds" | cut -c1 | sort | uniq -d)
+  # Single awk pass: compute duplicated first-chars, build hint list and bind/unbind args
+  eval "$(echo "$cmds" | awk '
+    NR==FNR { count[substr($0,1,1)]++; next }
+    {
+      k = substr($0,1,1)
+      if (count[k] == 1) {
+        keys = keys (keys ? "," : "") k
+        binds = binds " --bind " shquote(k ":become(echo " k ")")
+        print "hint+=(" shquote("[" k "] " $0) ")"
+      } else {
+        print "hint+=(" shquote($0) ")"
+      }
+    }
+    function shquote(s) { gsub(/\047/, "\047\\\047\047", s); return "\047" s "\047" }
+    END {
+      print "hotkeys=" shquote(keys)
+      print "hotbinds=" shquote(binds)
+    }
+  ' <(echo "$cmds") <(echo "$cmds"))"
 
-  expect=$(echo "$cmds" | while read c; do
-    k=$(echo "$c" | cut -c1)
-    echo "$keys" | grep -qx "$k" || printf '%s,' "$k"
-  done | sed 's/,$//')
+  local unbind_arg=""
+  [ -n "$hotkeys" ] && unbind_arg="--bind 'change:unbind($hotkeys)'"
 
-  hint=$(echo "$cmds" | while read c; do
-    k=$(echo "$c" | cut -c1)
-    if echo "$keys" | grep -qx "$k"; then echo "$c"
-    else echo "[$k] $c"; fi
-  done)
+  cmd=$(eval "printf '%s\n' \"\${hint[@]}\" | fzf --reverse --header \"\$header\" $hotbinds $unbind_arg") || return 1
 
-  result=$(echo "$hint" | fzf --reverse --header "$header" --expect="$expect") || return 1
-  key=$(echo "$result" | head -1)
-  sel=$(echo "$result" | tail -1 | sed 's/^\[.\] //')
-
-  if [ -n "$key" ]; then
-    cmd=$(echo "$cmds" | grep "^$key")
+  # Single char output means a hotkey fired; map back to full item
+  if [ ${#cmd} -eq 1 ]; then
+    cmd=$(echo "$cmds" | grep "^$cmd")
   else
-    cmd="$sel"
+    cmd=$(echo "$cmd" | sed 's/^\[.\] //')
   fi
   [ -n "$cmd" ] || return 1
   echo "$cmd"

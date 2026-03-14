@@ -187,5 +187,5 @@ export C_INCLUDE_PATH="`xcrun --show-sdk-path`/usr/include/ffi"
 
 
 # OpenRouter
-export OPENROUTER_API_KEY=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
+export OPENROUTER_API_KEY=none
 

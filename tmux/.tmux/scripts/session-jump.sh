@@ -3,9 +3,15 @@
 # Called from tmux bind g via display-popup
 source "$(dirname "$0")/lib.sh"
 
-sess=$(tmux list-sessions -F '#S' | fzf --reverse --header 'Pick session:') || exit 0
+sessions=$(tmux list-sessions -F '#S')
+sess=$(pick_command 'Pick session:' "$sessions") || exit 0
 cmds=$(tmux list-panes -s -t "$sess" -F '#{pane_current_command}' | sort -u)
-cmd=$(pick_command "$sess — pick command:" "$cmds") || exit 0
+count=$(echo "$cmds" | wc -l | tr -d ' ')
+if [ "$count" = "1" ]; then
+  cmd="$cmds"
+else
+  cmd=$(pick_command "$sess — pick command:" "$cmds") || exit 0
+fi
 
 tmux list-panes -s -t "$sess" -F '#{session_name}:#{window_index}.#{pane_index} #{pane_current_command}' \
   | grep " ${cmd}$" \
