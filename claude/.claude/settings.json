@@ -1,0 +1,106 @@
+{
+  "env": {
+    "EDITOR": "nvim",
+    "CLAUDE_HOOK_DEBUG": "1"
+  },
+  "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
+  },
+  "voiceEnabled": true,
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "id=$(cat | jq -r .session_id); echo \"$(date +%s) SessionStart\" >> /tmp/claude-hooks/${id}.log"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); ntype=$(echo $json | jq -r .notification_type); echo \"$(date +%s) Notification:${ntype}\" >> /tmp/claude-hooks/${id}.log"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); tool=$(echo $json | jq -r .tool_name); echo \"$(date +%s) PermissionRequest:${tool}\" >> /tmp/claude-hooks/${id}.log"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); tool=$(echo $json | jq -r .tool_name); echo \"$(date +%s) PreToolUse:${tool}\" >> /tmp/claude-hooks/${id}.log"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); tool=$(echo $json | jq -r .tool_name); echo \"$(date +%s) PostToolUse:${tool}\" >> /tmp/claude-hooks/${id}.log"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "id=$(cat | jq -r .session_id); echo \"$(date +%s) UserPromptSubmit\" >> /tmp/claude-hooks/${id}.log"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); reason=$(echo $json | jq -r '.stop_hook_reason // \"end\"'); f=/tmp/claude-hooks/${id}.log; echo \"$(date +%s) Stop:${reason}\" >> $f; tail -20 $f > $f.tmp && mv $f.tmp $f"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "id=$(cat | jq -r .session_id); echo \"$(date +%s) SessionEnd\" >> /tmp/claude-hooks/${id}.log"
+          }
+        ]
+      }
+    ]
+  }
+}
