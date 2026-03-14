@@ -165,6 +165,7 @@ alias cd-nvim='cd ~/.config/nvim'
 
 alias config-vim='vim ~/.vimrc'
 
+alias lg='lazygit'
 
 # nvm Stuff
 export NVM_DIR="$HOME/.nvm"
