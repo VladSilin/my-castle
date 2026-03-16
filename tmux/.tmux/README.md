@@ -11,7 +11,7 @@ Custom tmux configuration with agent-aware navigation and status indicators.
 
 ## Agent integration
 
-Designed for [Claude Code](https://claude.ai) but agent-agnostic via `scripts/agent.conf`:
+Designed for [Claude Code](https://claude.ai) but agent-agnostic via `scripts/config.sh`:
 
 ```bash
 AGENT_CMD="claude"   # process name to match
@@ -37,26 +37,37 @@ The agent must have a status line that includes the sentinel. For Claude Code, t
 
 | Binding | Action | Script |
 |---------|--------|--------|
-| `C-a s` | Fuzzy session switcher | inline |
+| `C-a s` | Fuzzy session switcher (ctrl-x=kill, single-char acceleration) | `scripts/session-switch.sh` |
 | `C-a w` | Fuzzy cross-session window switcher | inline |
+| `C-a S` | Quick bare session (name prompt, dir=current pane) | `scripts/session-create.sh` |
+| `C-a N` | New session with pre-configured windows (dir → name → commands) | `scripts/session-create.sh` |
 | `C-a C` | Spawn new agent window | `scripts/agent-spawn.sh` |
 | `C-a m` | Two-step pane finder (pick command → pick pane) | `scripts/pane-picker.sh` |
 | `C-a g` | Session-scoped pane jump | `scripts/session-jump.sh` |
 | `C-a >` | Jump to next agent pane awaiting input | `scripts/agent-jump.sh` |
+| `C-a ?` | Searchable hints popup | `scripts/hints.sh` |
+| `C-a Space` | Quick Claude popup (pick dir) | inline |
+| `C-a R` | Restart agent notification watcher | inline |
 
 ## Scripts
 
-All scripts live in `scripts/` and share config via `agent.conf` and functions via `lib.sh`.
+All scripts live in `scripts/` and share config via `config.sh` and functions via `lib.sh`.
 
 | File | Purpose |
 |------|---------|
-| `agent.conf` | Shared constants (agent command, sentinel) |
-| `lib.sh` | Shared functions: `is_awaiting`, `list_agent_panes`, `pick_command` |
+| `config.sh` | Shared constants (agent command, sentinel, colors, icons, polling intervals) |
+| `lib.sh` | Shared functions: `is_awaiting`, `list_agent_panes`, `count_agent_panes`, `pick_command` |
 | `agent-status.sh` | Tmux status bar pill showing agent count and awaiting count |
 | `agent-jump.sh` | Cycles through awaiting agent panes |
 | `agent-spawn.sh` | Opens a new named agent window |
+| `agent-notify.sh` | Background watcher — sends desktop notification on busy→awaiting transition |
 | `pane-picker.sh` | Fuzzy pane finder with ⧑ awaiting indicator |
 | `session-jump.sh` | Session-scoped fuzzy command/pane jump |
+| `session-switch.sh` | Session switcher with single-char acceleration and ctrl-x to kill |
+| `session-create.sh` | Create session: bare (name only) or full (dir → name → multi-select commands) |
+| `session-list-fmt.sh` | Format session list with `[k]` unique-char prefixes for acceleration |
+| `hints.sh` | Display searchable hints popup via fzf |
+| `toggle-track.sh` | Toggle items in a tracking file (used by fzf multi-select) |
 
 ## iTerm2 notes
 

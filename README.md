@@ -6,6 +6,8 @@ Dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
 Stow creates symlinks from `~/` pointing into this repo. Each top-level directory is a "package" whose contents mirror the home directory structure. Running `stow -t ~ tmux` makes `~/.tmux.conf` a symlink to `tmux/.tmux.conf` in this repo — edits in either location are the same file.
 
+**How stow chooses the target:** by default stow symlinks into the parent of its working directory. Since the repo lives in `~/Programming/my-castle/`, running plain `stow tmux` would target `~/Programming/` — not what we want. The `-t ~` flag overrides the target to the home directory.
+
 ## Packages
 
 | Package | Contents |
@@ -13,7 +15,7 @@ Stow creates symlinks from `~/` pointing into this repo. Each top-level director
 | `shell` | `.zshrc` |
 | `git`   | `.gitconfig` |
 | `vim`   | `.vimrc`, `.vim/` (colors, plugins, ftplugin) |
-| `tmux`  | `.tmux.conf`, `.tmux/scripts/` |
+| `tmux`  | `.tmux.conf`, `.tmux/` (scripts, hints), `.claude/settings.local.json` |
 | `claude`| `.claude/settings.json`, `.claude/statusline.sh` |
 
 ## Usage
@@ -63,7 +65,7 @@ Remove existing files that stow will replace before running:
 ```bash
 rm ~/.vimrc ~/.tmux.conf
 rm -rf ~/.vim/after ~/.vim/autoload ~/.vim/colors ~/.vim/plugin ~/.vim/syntax ~/.vim/coc-settings.json
-rm -rf ~/.tmux/scripts ~/.tmux/README.md
+rm -rf ~/.tmux/scripts ~/.tmux/hints.txt ~/.tmux/README.md
 ```
 
 Skip `shell` (work `.zshrc` will differ) and `claude` (not all settings apply). For individual files from skipped packages, symlink manually:
