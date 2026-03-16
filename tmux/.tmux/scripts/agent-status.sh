@@ -12,11 +12,11 @@ for p in $panes; do
   is_awaiting "$p" && awaiting=$((awaiting + 1))
 done
 
-BG="#4F4946"
+BG="$COLOR_LIGHT_GRAY"
 OPEN=""
 CLOSE=""
 if [ "$awaiting" -gt 0 ]; then
-  printf '#[bg=default,fg=%s]%s#[bg=%s,fg=#a782f7] 👾 %s #[fg=#ee9b40]⧑ %s #[bg=default,fg=%s]%s ' "$BG" "$OPEN" "$BG" "$total" "$awaiting" "$BG" "$CLOSE"
+  printf '#[bg=default,fg=%s]%s#[bg=%s,fg=%s] %s %s #[fg=%s]%s %s #[bg=default,fg=%s]%s ' "$BG" "$OPEN" "$BG" "$COLOR_BLUE" "$SENTINEL" "$total" "$COLOR_YELLOW" "$AWAITING_ICON" "$awaiting" "$BG" "$CLOSE"
 else
-  printf '#[bg=default,fg=%s]%s#[bg=%s,fg=#a782f7] 👾 %s #[bg=default,fg=%s]%s ' "$BG" "$OPEN" "$BG" "$total" "$BG" "$CLOSE"
+  printf '#[bg=default,fg=%s]%s#[bg=%s,fg=%s] %s %s #[bg=default,fg=%s]%s ' "$BG" "$OPEN" "$BG" "$COLOR_BLUE" "$SENTINEL" "$total" "$BG" "$CLOSE"
 fi

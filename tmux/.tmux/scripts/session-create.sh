@@ -6,12 +6,12 @@ source "$(dirname "$0")/lib.sh"
 FALLBACK_DIR="${1:-$HOME}"
 
 # Config
-BASE_DIR="$HOME/Programming"
-EXCLUDE="zsh|bash"
-INCLUDE=("claude" "shell" "nvim")
+BASE_DIR="$PROJECT_DIR"
+EXCLUDE="$SHELL_CMD|bash"
+INCLUDE=("$AGENT_CMD" "shell" "$EDITOR_CMD")
 
 # Step 1 — Pick working directory
-DIR=$(find "$BASE_DIR" -maxdepth 1 -type d 2>/dev/null \
+DIR=$(find "$BASE_DIR" -maxdepth "$PROJECT_DEPTH" -type d 2>/dev/null \
   | fzf --reverse --header "Pick working directory") || exit 0
 
 [ -n "$DIR" ] || exit 0

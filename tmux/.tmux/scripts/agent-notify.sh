@@ -1,15 +1,12 @@
 #!/bin/bash
 # Background watcher: notify when an agent pane finishes and is awaiting input
 source "$(dirname "$0")/lib.sh"
-
-POLL_INTERVAL=5
-TERMINAL_APP="iTerm2"
 state_file=$(mktemp)
 trap "rm -f '$state_file'" EXIT
 
 while true; do
   panes=$(list_agent_panes)
-  [ -z "$panes" ] && sleep "$POLL_INTERVAL" && continue
+  [ -z "$panes" ] && sleep "$NOTIFY_INTERVAL" && continue
 
   while IFS= read -r pane; do
     [ -z "$pane" ] && continue
@@ -46,5 +43,5 @@ while true; do
   done < "$state_file" > "$tmp"
   mv "$tmp" "$state_file"
 
-  sleep "$POLL_INTERVAL"
+  sleep "$NOTIFY_INTERVAL"
 done

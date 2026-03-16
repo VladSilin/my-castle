@@ -10,7 +10,7 @@ cmd=$(pick_command "Pick command:" "$cmds") || exit 0
 matches=$(tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{window_name} #{pane_current_command}' \
   | grep " ${cmd}$" | awk '{print $1, $2, $3}' | while read pane name pcmd; do
     if [ "$pcmd" = "$AGENT_CMD" ] && is_awaiting "$pane"; then
-      echo "$pane $name ⧑"
+      echo "$pane $name $AWAITING_ICON"
     else
       echo "$pane $name"
     fi

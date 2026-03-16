@@ -2,7 +2,7 @@
 # Shared functions for tmux agent scripts
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/agent.conf"
+source "$SCRIPT_DIR/config.sh"
 
 # Check if a pane is awaiting input (sentinel absent from bottom of pane)
 # Usage: is_awaiting <pane_id>
