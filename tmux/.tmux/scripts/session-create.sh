@@ -87,20 +87,13 @@ fi
 [ ${#selected_cmds[@]} -eq 0 ] && exit 0
 
 # Step 5 — Create session with first command, then add remaining windows
-first="${selected_cmds[0]}"
-if [ "$first" = "shell" ]; then
-  tmux new-session -d -c "$DIR" -s "$name"
-else
-  tmux new-session -d -c "$DIR" -s "$name" "$first; exec $SHELL_CMD"
-fi
+base=$(tmux show -gv base-index)
+tmux new-session -d -c "$DIR" -s "$name"
+[ "${selected_cmds[0]}" != "shell" ] && tmux send-keys -t "$name:$base" "${selected_cmds[0]}" Enter
 
 for ((i = 1; i < ${#selected_cmds[@]}; i++)); do
-  cmd="${selected_cmds[$i]}"
-  if [ "$cmd" = "shell" ]; then
-    tmux new-window -t "$name" -c "$DIR"
-  else
-    tmux new-window -t "$name" -c "$DIR" "$cmd; exec $SHELL_CMD"
-  fi
+  tmux new-window -t "$name" -c "$DIR"
+  [ "${selected_cmds[$i]}" != "shell" ] && tmux send-keys -t "$name:$((base + i))" "${selected_cmds[$i]}" Enter
 done
 
 # Attach or switch depending on whether we're inside tmux
