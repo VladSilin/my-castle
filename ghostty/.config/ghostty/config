@@ -1,0 +1,9 @@
+font-family = JetBrainsMono Nerd Font Mono
+font-style = Regular
+font-size = 14
+cursor-style-blink = true
+theme = Monokai Soda
+background = 212121
+background-opacity = 0.95
+background-blur-radius = 82
+window-padding-color = background
