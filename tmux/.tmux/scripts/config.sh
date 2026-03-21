@@ -26,4 +26,4 @@ STATUS_INTERVAL=1      # how often tmux re-evaluates status bar (agent-status.sh
 NOTIFY_INTERVAL=1      # how often agent-notify.sh checks for busy → awaiting transitions
 
 # Notification
-TERMINAL_APP="iTerm2"
+TERMINAL_APP="ghostty"

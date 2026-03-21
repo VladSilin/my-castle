@@ -1,8 +1,16 @@
 #!/bin/bash
 # Background watcher: notify when an agent pane finishes and is awaiting input
 source "$(dirname "$0")/lib.sh"
+
+# Ensure only one instance runs (lock via pidfile)
+PIDFILE="/tmp/agent-notify.pid"
+if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+  exit 0
+fi
+echo $$ > "$PIDFILE"
+
 state_file=$(mktemp)
-trap "rm -f '$state_file'" EXIT
+trap "rm -f '$state_file' '$PIDFILE'" EXIT
 
 while true; do
   panes=$(list_agent_panes)
