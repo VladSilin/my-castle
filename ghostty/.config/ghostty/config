@@ -7,3 +7,5 @@ background = 212121
 background-opacity = 0.95
 background-blur-radius = 82
 window-padding-color = background
+window-colorspace = srgb
+bold-is-bright = false

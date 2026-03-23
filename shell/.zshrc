@@ -108,6 +108,8 @@ source $ZSH/oh-my-zsh.sh
 
 
 # Terminal Colors
+# tmux only advertises 256-color via $TERM; this tells apps (e.g. Claude Code) to use full 24-bit color
+export COLORTERM=truecolor
 export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
 alias ls='ls -GFh'
