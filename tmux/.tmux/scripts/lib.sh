@@ -56,7 +56,10 @@ pick_command() {
   local unbind_arg=""
   [ -n "$hotkeys" ] && unbind_arg="--bind 'change:unbind($hotkeys)'"
 
-  cmd=$(eval "printf '%s\n' \"\${hint[@]}\" | fzf --reverse --header \"\$header\" $hotbinds $unbind_arg") || return 1
+  local global_bind=""
+  [ "${enable_global:-0}" = "1" ] && global_bind="--bind 'alt-enter:become(echo GLOBAL:{})'"
+
+  cmd=$(eval "printf '%s\n' \"\${hint[@]}\" | fzf --reverse --header \"\$header\" $hotbinds $global_bind $unbind_arg") || return 1
 
   # Single char output means a hotkey fired; map back to full item
   if [ ${#cmd} -eq 1 ]; then

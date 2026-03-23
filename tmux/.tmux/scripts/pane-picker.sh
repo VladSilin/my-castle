@@ -20,6 +20,6 @@ count=$(echo "$matches" | wc -l | tr -d ' ')
 if [ "$count" = "1" ]; then
   echo "$matches" | awk '{print $1}' | xargs tmux switch-client -t
 else
-  echo "$matches" | fzf --reverse --header "$cmd panes:" --preview 'tmux capture-pane -t {1} -p | grep -v "^$" | tail -20' \
+  echo "$matches" | fzf --reverse --header "$cmd panes:" --ansi --preview 'tmux capture-pane -e -t {1} -p | grep -v "^$"' --preview-window=right,70%,follow \
     | awk '{print $1}' | xargs tmux switch-client -t
 fi
