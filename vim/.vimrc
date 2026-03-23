@@ -14,10 +14,6 @@ if v:progname =~? "evim"
   finish
 endif
 
-" Use Vim settings, rather than Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
-set nocompatible
-
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
@@ -100,11 +96,7 @@ set number
 
 " Set up color scheme
 set t_Co=256
-"colorscheme jellybeans
 
-" This one is NOT working
-"set termguicolors
-" Do this instead:
 " Set Vim-specific sequences for RGB colors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -113,7 +105,7 @@ set background=dark
 colorscheme edge
 
 
-" Tab settings
+" Tab settings (defaults, vim-sleuth will override per-project)
 set expandtab
 set shiftwidth=4
 set softtabstop=4
@@ -134,11 +126,16 @@ if !exists(":Bd")
 endif
 
 
-" Do not highlight searches
-set nohlsearch
+" Search settings
+set hlsearch
+set ignorecase
+set smartcase
 
 " Show number of matches in search
 set shortmess-=S
+
+" Scroll context
+set scrolloff=10
 
 
 " Autosave Buffers
@@ -148,18 +145,15 @@ set autowriteall
 " Keep buffer undo history
 set hidden
 
+" Persistent undo across sessions
+set undofile
+set undodir=~/tmp/undodir
+
 
 " netrw (File Tree Browser) Config
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4
-let g:netrw_altv = 1
-let g:netrw_winsize = 20
-"augroup ProjectDrawer
-"    autocmd!
-"    autocmd VimEnter * :Vexplore
-"    autocmd VimEnter * wincmd l
-"augroup END
+let g:netrw_browse_split = 0
 
 
 " Terminal Command Setup
@@ -176,7 +170,7 @@ set dir=~/tmp
 " Cursor Line in Edit Mode
 " Cursor settings:
 "  1 -> blinking block
-"  2 -> solid block 
+"  2 -> solid block
 "  3 -> blinking underscore
 "  4 -> solid underscore
 "  5 -> blinking vertical bar
@@ -192,41 +186,21 @@ set timeoutlen=1000
 set ttimeoutlen=5
 
 
-" Flavored Markdown
-augroup Markdown
-    au!
-    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
-augroup END
-
-
 " Proper Indentation on Paste
 nnoremap <F2> :set invpaste paste?<CR>
-set pastetoggle=<F2>
 
 
 " Save when focus lost
 au FocusLost * silent! wa
 
 
-" Copy to clipboard easily
-noremap <Leader>y "*y
-noremap <Leader>p "*p
-noremap <Leader>Y "+y
-noremap <Leader>P "+p
+" Sync clipboard between OS and Vim
+set clipboard=unnamed
 
 
-" Fix redraw error
-syntax on
-set re=0
 
-
-" Autoclose brackets and quotes
-"inoremap { {}<Esc>ha
-"inoremap ( ()<Esc>ha
-"inoremap [ []<Esc>ha
-"inoremap " ""<Esc>ha
-"inoremap ' ''<Esc>ha
-"inoremap ` ``<Esc>ha
+" Encoding
+set encoding=UTF-8
 
 
 
@@ -238,72 +212,30 @@ call plug#begin('~/.vim/plugged')
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
-" Polyglot (Syntax Highlighting)
-let g:polyglot_disabled = ['markdown']
-Plug 'sheerun/vim-polyglot'
-
-" Language Analysis
-" CocList extensions:
-" * coc-snippets
-" * coc-prettier
-" * coc-eslint
-" * coc-emmet
-" + coc-tsserver 
-" + coc-pyright
-" + coc-json
-" + coc-java
-" + coc-css
-"
-" NOTE: For coc-snippets, see
-" https://www.reddit.com/r/vim/comments/gu5nm0/automatically_close_jsx_tags/
+" Language Analysis (coc.nvim)
+" Install extensions with :CocInstall
+"   coc-snippets coc-prettier coc-eslint coc-emmet
+"   coc-tsserver coc-pyright coc-json coc-java coc-css
+"   coc-html coc-tailwindcss coc-terraform
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Quality of Life
-Plug 'yuttie/comfortable-motion.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'zivyangll/git-blame.vim'
+Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-surround'
+Plug 'romainl/vim-cool'
 
-" NerdTree (File Explorer)
-Plug 'preservim/nerdtree'
-Plug 'ryanoasis/vim-devicons'
+" Git
+Plug 'tpope/vim-fugitive'
+
+" File Explorer (enhances built-in netrw)
+Plug 'tpope/vim-vinegar'
 
 " Markdown
 " https://codeinthehole.com/tips/writing-markdown-in-vim/
 Plug 'godlygeek/tabular'
 Plug 'preservim/vim-markdown'
-
-" Haskell
-Plug 'alx741/vim-hindent'
 call plug#end()
-
-
-" NerdTree Config
-" Open NerdTree automatically if no files are specified
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-
-" Do not open NerdTree on saved session
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
-
-" Open NerdTree if a directory is opened
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
-
-" Map Ctrl-N to toggle NerdTree
-map <C-n> :NERDTreeToggle<CR>
-
-" Close NerdTree if the only window left is a NerdTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-" Set NerdTree size
-let g:NERDTreeWinSize = 40
-
-" Show hidden files by default
-let NERDTreeShowHidden=1
-
-" Required for icons in NerdTree using the vim-devicons plugin
-set encoding=UTF-8
 
 
 " Lightline Config
@@ -311,19 +243,14 @@ set laststatus=2
 set noshowmode
 
 
-" Comfortable Motion (Smooth Scrolling) Config
-let g:comfortable_motion_scroll_down_key = "j"
-let g:comfortable_motion_scroll_up_key = "k"
-
-
-" FZP (File Finder) Config
+" FZF (File Finder) Config
 nnoremap <C-p> :Files<CR>
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>h :History<CR>
 
 
-" Git Blame Config
-nnoremap <Leader>s :<C-u>call gitblame#echo()<CR>
+" Git Blame Config (via fugitive)
+nnoremap <Leader>s :Git blame<CR>
 
 
 " Copilot
@@ -365,5 +292,3 @@ let g:vim_markdown_strikethrough = 1
 
 " Associate .md with Markdown
 au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
-
-

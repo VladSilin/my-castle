@@ -1,31 +1,15 @@
 {
   "python.pythonPath": "python",
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "black",
+  "python.sortImports.path": "isort",
   "suggest.enablePreview": true,
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextCurrentLineOnly": false,
-  "python.formatting.provider": "black",
-  "python.formatting.blackPath": "black",
-  "languageserver": {
-    "haskell": {
-      "command": "haskell-language-server-wrapper",
-      "args": ["--lsp"],
-      "rootPatterns": [
-        ".stack.yaml",
-        ".hie-bios",
-        "BUILD.bazel",
-        "cabal.config",
-        "package.yaml"
-      ],
-      "filetypes": ["hs", "lhs", "haskell"],
-      "initializationOptions": {
-        "languageServerHaskell": {
-          "hlintOn": true,
-          "maxNumberOfProblems": 10,
-          "completionSnippetsOn": true
-        }
-      }
-    }
-  },
-  "coc.preferences.formatOnSaveFiletypes": ["*"],
+  "coc.preferences.formatOnSave": true,
+  "prettier.requireConfig": true,
+  "eslint.autoFixOnSave": true,
+  "tailwindCSS.emmetCompletions": true,
+  "terraform.languageServer.path": "terraform-ls",
   "snippets.ultisnips.pythonPrompt": false
 }
