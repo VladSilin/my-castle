@@ -18,8 +18,8 @@ COLOR_LIGHT_GRAY="#4F4946"
 AWAITING_ICON="⧑"
 
 # Project search
-PROJECT_DIR="$HOME/Programming"
-PROJECT_DEPTH=1
+PROJECT_DIR="$HOME"
+PROJECT_DEPTH=5
 
 # Polling intervals (seconds)
 STATUS_INTERVAL=1      # how often tmux re-evaluates status bar (agent-status.sh)
