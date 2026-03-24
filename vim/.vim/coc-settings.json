@@ -11,5 +11,8 @@
   "eslint.autoFixOnSave": true,
   "tailwindCSS.emmetCompletions": true,
   "terraform.languageServer.path": "terraform-ls",
-  "snippets.ultisnips.pythonPrompt": false
+  "snippets.ultisnips.pythonPrompt": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }
