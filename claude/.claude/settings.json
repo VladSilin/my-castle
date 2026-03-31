@@ -3,7 +3,7 @@
     "EDITOR": "nvim",
     "CLAUDE_HOOK_DEBUG": "1"
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -11,7 +11,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "id=$(cat | jq -r .session_id); echo \"$(date +%s) SessionStart\" >> /tmp/claude-hooks/${id}.log"
+            "command": "mkdir -p /tmp/claude-hooks; id=$(cat | jq -r .session_id); echo \"$(date +%s) SessionStart\" >> /tmp/claude-hooks/${id}.log"
           }
         ]
       }
