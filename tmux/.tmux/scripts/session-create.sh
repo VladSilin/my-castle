@@ -11,10 +11,7 @@ EXCLUDE="$SHELL_CMD|bash"
 INCLUDE=("$AGENT_CMD" "shell" "$EDITOR_CMD")
 
 # Step 1 — Pick working directory
-DIR=$(find "$BASE_DIR" -maxdepth "$PROJECT_DEPTH" -type d 2>/dev/null \
-  | fzf --reverse --header "Pick working directory") || exit 0
-
-[ -n "$DIR" ] || exit 0
+DIR=$(pick_dir) || exit 0
 
 # Step 2 — Name prompt
 taken=$(tmux list-sessions -F '#S' | cut -c1 | sort -u | sed 's/./[&]/g' | tr -d '\n')

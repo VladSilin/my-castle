@@ -4,6 +4,31 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/config.sh"
 
+# Pick a working directory via fzf
+# Usage: pick_dir [current_dir]
+# Returns selected path on stdout, exits 1 on cancel
+# Offers "· current dir" sentinel when current_dir is provided
+pick_dir() {
+  local current="$1"
+  local dir
+
+  if [ -n "$current" ]; then
+    dir=$({ echo '· current dir'; find "$PROJECT_DIR" -maxdepth "$PROJECT_DEPTH" -type d 2>/dev/null; } \
+      | fzf --reverse --header 'Pick working directory') || return 1
+  else
+    dir=$(find "$PROJECT_DIR" -maxdepth "$PROJECT_DEPTH" -type d 2>/dev/null \
+      | fzf --reverse --header 'Pick working directory') || return 1
+  fi
+
+  [ -n "$dir" ] || return 1
+
+  if [ "$dir" = "· current dir" ]; then
+    echo "$current"
+  else
+    echo "$dir"
+  fi
+}
+
 # Check if a pane is awaiting input (sentinel absent from bottom of pane)
 # Usage: is_awaiting <pane_id>
 is_awaiting() {

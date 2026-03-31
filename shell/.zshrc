@@ -201,3 +201,18 @@ export C_INCLUDE_PATH="`xcrun --show-sdk-path`/usr/include/ffi"
 # OpenRouter (stored in macOS Keychain)
 export OPENROUTER_API_KEY=$(security find-generic-password -a "$USER" -s openrouter -w)
 
+
+# Offline access
+subway() {
+    sudo pmset -a disablesleep 1
+    echo "Sleep fully disabled."
+    echo "Now flip Internet Sharing on."
+    open "x-apple.systempreferences:com.apple.Sharing-Settings.extension"
+}
+
+subway-off() {
+    sudo pmset -a disablesleep 0
+    echo "Sleep re-enabled."
+    echo "Flip Internet Sharing off."
+    open "x-apple.systempreferences:com.apple.Sharing-Settings.extension"
+}

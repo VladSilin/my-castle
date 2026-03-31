@@ -22,6 +22,9 @@ AWAITING_ICON_ANSI=$'\033[38;5;172m⧑\033[0m'
 PROJECT_DIR="$HOME"
 PROJECT_DEPTH=5
 
+# Popup launcher commands (C-a Space)
+POPUP_CMDS=("$AGENT_CMD" "$EDITOR_CMD" "$SHELL_CMD")
+
 # Polling intervals (seconds)
 STATUS_INTERVAL=1      # how often tmux re-evaluates status bar (agent-status.sh)
 NOTIFY_INTERVAL=1      # how often agent-notify.sh checks for busy → awaiting transitions
