@@ -114,6 +114,9 @@ export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
 alias ls='ls -GFh'
 
+# Fix for muted colours in Claude Code
+export CLAUDE_CODE_TMUX_TRUECOLOR=1
+
 
 # Python Stuff
 # alias pip=/usr/local/bin/pip3
