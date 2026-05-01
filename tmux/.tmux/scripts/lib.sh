@@ -8,17 +8,23 @@ source "$SCRIPT_DIR/config.sh"
 # Usage: pick_dir [current_dir]
 # Returns selected path on stdout, exits 1 on cancel
 # Offers "· current dir" sentinel when current_dir is provided
+#
+# Source order: zoxide frecent dirs (instant, ranked) → fd walk of $PROJECT_DIR.
+# awk dedupes by first-seen so frecent hits stay on top; fzf --tiebreak=index
+# preserves that ordering when match scores tie.
 pick_dir() {
   local current="$1"
   local dir
 
-  if [ -n "$current" ]; then
-    dir=$({ echo '· current dir'; find "$PROJECT_DIR" -maxdepth "$PROJECT_DEPTH" -type d 2>/dev/null; } \
-      | fzf --reverse --header 'Pick working directory') || return 1
-  else
-    dir=$(find "$PROJECT_DIR" -maxdepth "$PROJECT_DEPTH" -type d 2>/dev/null \
-      | fzf --reverse --header 'Pick working directory') || return 1
-  fi
+  dir=$({
+    [ -n "$current" ] && echo '· current dir'
+    zoxide query -l 2>/dev/null
+    fd --type d --hidden --max-depth "$PROJECT_DEPTH" \
+       --exclude .git --exclude node_modules --exclude Library \
+       --exclude .Trash --exclude .cache --exclude .venv --exclude .npm \
+       . "$PROJECT_DIR" 2>/dev/null
+  } | awk '!seen[$0]++' \
+    | fzf --reverse --tiebreak=index --header 'Pick working directory') || return 1
 
   [ -n "$dir" ] || return 1
 

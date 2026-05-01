@@ -137,6 +137,22 @@ if [ ! -f ~/.fzf-git.sh ]; then
 fi
 source ~/.fzf-git.sh
 
+# zoxide: frecency-based directory jumping for dirs you've visited before.
+#   z <token>   jump to best match (e.g. `z skills`)
+#   zi <token>  interactive fzf picker over your dir history
+eval "$(zoxide init zsh)"
+
+# fcd: true cross-filesystem directory fuzzy search for dirs you've never visited.
+# Walks $HOME with fd, skipping noisy trees, and cd's into the picked result.
+fcd() {
+  local dir
+  dir=$(fd --type d --hidden --follow \
+            --exclude .git --exclude node_modules --exclude Library \
+            --exclude .Trash --exclude .cache \
+            . ~ | fzf --preview 'ls -la {} | head -50') \
+    && cd "$dir"
+}
+
 
 # nvim Config
 # The `DBUS_SESSION_BUS_ADDRESS` environment variable must be set for Zathura to work with VimTeX; see [2] for details.
