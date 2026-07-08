@@ -24,7 +24,7 @@ get_monthly_cost() {
   # Return stale value (or fallback) immediately
   (
     current_month="$(date +%Y-%m)"
-    monthly="$(npx ccusage monthly --json 2>/dev/null | jq -r --arg m "$current_month" '.monthly[] | select(.month == $m) | .totalCost // 0')"
+    monthly="$(npx ccusage monthly --json 2>/dev/null | jq -r --arg m "$current_month" '.monthly[] | select(.period == $m or .month == $m) | .totalCost // 0')"
     printf '%.2f' "${monthly:-0}" > "$MONTHLY_CACHE"
   ) &
 
@@ -91,14 +91,8 @@ bar=""
 for (( i = 0; i < filled; i++ )); do bar+="█"; done
 for (( i = 0; i < empty; i++ )); do bar+="░"; done
 
-# Pretty model name
-lc_model="$(echo "$model" | tr '[:upper:]' '[:lower:]')"
-case "$lc_model" in
-  *opus*)   display_model="Opus 4.6" ;;
-  *sonnet*) display_model="Sonnet 4.6" ;;
-  *haiku*)  display_model="Haiku 4.5" ;;
-  *)        display_model="$model" ;;
-esac
+# Model name (display_name from Claude Code is already clean, e.g. "Opus 4.8 (1M context)")
+display_model="$model"
 
 used_fmt="$(format_tokens "$used")"
 total_fmt="$(format_tokens "$total")"

@@ -6,7 +6,6 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -25,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); ntype=$(echo $json | jq -r .notification_type); echo \"$(date +%s) Notification:${ntype}\" >> /tmp/claude-hooks/${id}.log"
+            "command": "mkdir -p /tmp/claude-hooks; json=$(cat); id=$(printf '%s' \"$json\" | jq -r .session_id); ntype=$(printf '%s' \"$json\" | jq -r .notification_type); echo \"$(date +%s) Notification:${ntype}\" >> /tmp/claude-hooks/${id}.log"
           }
         ]
       }
@@ -36,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); tool=$(echo $json | jq -r .tool_name); echo \"$(date +%s) PermissionRequest:${tool}\" >> /tmp/claude-hooks/${id}.log"
+            "command": "mkdir -p /tmp/claude-hooks; json=$(cat); id=$(printf '%s' \"$json\" | jq -r .session_id); tool=$(printf '%s' \"$json\" | jq -r .tool_name); echo \"$(date +%s) PermissionRequest:${tool}\" >> /tmp/claude-hooks/${id}.log"
           }
         ]
       }
@@ -47,7 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); tool=$(echo $json | jq -r .tool_name); echo \"$(date +%s) PreToolUse:${tool}\" >> /tmp/claude-hooks/${id}.log"
+            "command": "mkdir -p /tmp/claude-hooks; json=$(cat); id=$(printf '%s' \"$json\" | jq -r .session_id); tool=$(printf '%s' \"$json\" | jq -r .tool_name); echo \"$(date +%s) PreToolUse:${tool}\" >> /tmp/claude-hooks/${id}.log"
           }
         ]
       }
@@ -58,7 +57,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); tool=$(echo $json | jq -r .tool_name); echo \"$(date +%s) PostToolUse:${tool}\" >> /tmp/claude-hooks/${id}.log"
+            "command": "mkdir -p /tmp/claude-hooks; json=$(cat); id=$(printf '%s' \"$json\" | jq -r .session_id); tool=$(printf '%s' \"$json\" | jq -r .tool_name); echo \"$(date +%s) PostToolUse:${tool}\" >> /tmp/claude-hooks/${id}.log"
           }
         ]
       }
@@ -69,7 +68,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "id=$(cat | jq -r .session_id); echo \"$(date +%s) UserPromptSubmit\" >> /tmp/claude-hooks/${id}.log"
+            "command": "mkdir -p /tmp/claude-hooks; id=$(cat | jq -r .session_id); echo \"$(date +%s) UserPromptSubmit\" >> /tmp/claude-hooks/${id}.log"
           }
         ]
       }
@@ -80,7 +79,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "json=$(cat); id=$(echo $json | jq -r .session_id); reason=$(echo $json | jq -r '.stop_hook_reason // \"end\"'); f=/tmp/claude-hooks/${id}.log; echo \"$(date +%s) Stop:${reason}\" >> $f; tail -20 $f > $f.tmp && mv $f.tmp $f"
+            "command": "mkdir -p /tmp/claude-hooks; json=$(cat); id=$(printf '%s' \"$json\" | jq -r .session_id); reason=$(printf '%s' \"$json\" | jq -r '.stop_hook_reason // \"end\"'); f=/tmp/claude-hooks/${id}.log; echo \"$(date +%s) Stop:${reason}\" >> $f; tail -20 $f > $f.tmp && mv $f.tmp $f"
           }
         ]
       }
@@ -91,7 +90,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "id=$(cat | jq -r .session_id); echo \"$(date +%s) SessionEnd\" >> /tmp/claude-hooks/${id}.log"
+            "command": "mkdir -p /tmp/claude-hooks; id=$(cat | jq -r .session_id); echo \"$(date +%s) SessionEnd\" >> /tmp/claude-hooks/${id}.log"
           }
         ]
       }
@@ -107,6 +106,7 @@
   },
   "effortLevel": "xhigh",
   "tui": "default",
+  "editorMode": "vim",
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true
 }

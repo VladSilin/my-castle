@@ -235,3 +235,10 @@ subway-off() {
     echo "Flip Internet Sharing off."
     open "x-apple.systempreferences:com.apple.Sharing-Settings.extension"
 }
+
+
+# ---- SDKMAN (Java / Maven / Gradle version manager) ----
+# Manages JDK, Maven, Gradle. `sdk list java`, `sdk use java <ver>`, per-project `.sdkmanrc`.
+# This block MUST stay at the very bottom of the file (SDKMAN sets PATH/JAVA_HOME here).
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
