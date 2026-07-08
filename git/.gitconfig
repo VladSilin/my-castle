@@ -5,3 +5,7 @@ name = Vlad Silin
 email = vlad.silin.y@gmail.com
 [core]
 	editor = nvim
+# Machine-local overrides (credential helper, work identity, proxies).
+# Git silently skips this include if the file doesn't exist.
+[include]
+	path = ~/.gitconfig-local
