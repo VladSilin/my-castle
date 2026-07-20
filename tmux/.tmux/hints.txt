@@ -9,7 +9,7 @@
 󱁉 Windows2        w fuzzy cross-session window picker • , rename window • & kill window
 󰖯 Move Window     :move-window -t <session> move current window to another session
 󰅂 Copy Mode       [ enter copy mode • v begin selection • y yank to clipboard
-󰚩 Agents          C spawn agent window • > jump to first awaiting agent • m two-step pane finder
+󰚩 Agents          C spawn agent window (pick dir) • > jump to first awaiting agent • m two-step pane finder
 󰚩 Agent Nav       g session-scoped window jump (by name) • m pick command → pick pane with preview
 󰋼 Popup           Space quick Claude popup (pick dir) • ? this hints popup
 󰁨 Scroll          C-a [ then k/j or C-u/C-d to scroll • q exit copy mode

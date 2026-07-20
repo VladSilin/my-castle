@@ -39,9 +39,9 @@ The agent must have a status line that includes the sentinel. For Claude Code, t
 |---------|--------|--------|
 | `C-a s` | Fuzzy session switcher (ctrl-x=kill, single-char acceleration) | `scripts/session-switch.sh` |
 | `C-a w` | Fuzzy cross-session window switcher | inline |
-| `C-a S` | Quick bare session (name prompt, dir=current pane) | `scripts/session-create.sh` |
+| `C-a S` | Quick bare session (name prompt, dir=$HOME) | inline |
 | `C-a N` | New session with pre-configured windows (dir → name → commands) | `scripts/session-create.sh` |
-| `C-a C` | Spawn new agent window | `scripts/agent-spawn.sh` |
+| `C-a C` | Spawn new agent window (dir → name) | `scripts/agent-spawn.sh` |
 | `C-a m` | Two-step pane finder (pick command → pick pane) | `scripts/pane-picker.sh` |
 | `C-a g` | Session-scoped pane jump | `scripts/session-jump.sh` |
 | `C-a >` | Jump to next agent pane awaiting input | `scripts/agent-jump.sh` |

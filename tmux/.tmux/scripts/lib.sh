@@ -18,6 +18,7 @@ pick_dir() {
 
   dir=$({
     [ -n "$current" ] && echo '· current dir'
+    echo "$HOME"
     zoxide query -l 2>/dev/null
     fd --type d --hidden --max-depth "$PROJECT_DEPTH" \
        --exclude .git --exclude node_modules --exclude Library \
