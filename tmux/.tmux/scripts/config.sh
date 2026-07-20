@@ -1,7 +1,8 @@
 # Shared config for tmux scripts
 
 # Agent
-AGENT_CMD="claude"
+AGENT_CMD="claude"        # command to invoke
+AGENT_PROC="claude.exe"  # process name tmux sees (Electron binary)
 SENTINEL="👾"
 SENTINEL_TAIL=5
 

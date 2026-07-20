@@ -45,7 +45,7 @@ is_awaiting() {
 # List all agent panes as "session:win.pane" (one per line)
 list_agent_panes() {
   tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{pane_current_command}' 2>/dev/null \
-    | grep " ${AGENT_CMD}$" | cut -d' ' -f1
+    | grep " ${AGENT_PROC}$" | cut -d' ' -f1
 }
 
 # Count agent panes

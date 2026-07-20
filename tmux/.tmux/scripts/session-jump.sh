@@ -1,44 +1,50 @@
 #!/bin/bash
-# Session-scoped pane jump: pick session → pick command → jump to first match
+# Session-scoped window jump: pick session → pick window (by name) → jump to it
 # Called from tmux bind g via display-popup
+#
+# Keyed off window_name rather than pane_current_command: with one agent
+# process per pane, pane_current_command is the same for every window
+# (e.g. claude.exe), so it never disambiguates. window_name carries the
+# per-window identity instead (manually renamed windows keep their name;
+# automatic-rename only overwrites windows that haven't been renamed).
 source "$(dirname "$0")/lib.sh"
 
 sessions=$(tmux list-sessions -F '#S')
 sess=$(pick_command 'Pick session:' "$sessions") || exit 0
-cmds=$(tmux list-panes -s -t "$sess" -F '#{pane_current_command}' | sort | uniq -c | awk '{print $2 " (" $1 ")"}')
-count=$(echo "$cmds" | wc -l | tr -d ' ')
+names=$(tmux list-windows -t "$sess" -F '#{window_name}' | sort | uniq -c | awk '{print $2 " (" $1 ")"}')
+count=$(echo "$names" | wc -l | tr -d ' ')
 if [ "$count" = "1" ]; then
-  cmd=$(echo "$cmds" | sed 's/ ([0-9]*)$//')
+  name=$(echo "$names" | sed 's/ ([0-9]*)$//')
 else
-  enable_global=1 cmd=$(pick_command "$sess — pick command (⌥⏎=all):" "$cmds") || exit 0
-  cmd=$(echo "$cmd" | sed 's/ ([0-9]*)$//')
+  enable_global=1 name=$(pick_command "$sess — pick window (⌥⏎=all):" "$names") || exit 0
+  name=$(echo "$name" | sed 's/ ([0-9]*)$//')
 fi
 
-# alt-enter: show all panes for that command within the session
-if [[ "$cmd" == GLOBAL:* ]]; then
-  cmd="${cmd#GLOBAL:}"
-  cmd=$(echo "$cmd" | sed 's/^\[.\] //' | sed 's/ ([0-9]*)$//')
-  matches=$(tmux list-panes -s -t "$sess" -F '#{session_name}:#{window_index}.#{pane_index} #{window_name} #{pane_current_command}' \
-    | grep " ${cmd}$" | awk '{print $1, $2, $3}' | while read pane name pcmd; do
-      if [ "$pcmd" = "$AGENT_CMD" ] && is_awaiting "$pane"; then
-        echo "$pane $name $AWAITING_ICON_ANSI"
+# alt-enter: show all panes across windows with that name within the session
+if [[ "$name" == GLOBAL:* ]]; then
+  name="${name#GLOBAL:}"
+  name=$(echo "$name" | sed 's/^\[.\] //' | sed 's/ ([0-9]*)$//')
+  matches=$(tmux list-panes -s -t "$sess" -F $'#{session_name}:#{window_index}.#{pane_index}\t#{window_name}\t#{pane_current_command}' \
+    | awk -F'\t' -v n="$name" '$2 == n' | while IFS=$'\t' read -r pane wname pcmd; do
+      if [ "$pcmd" = "$AGENT_PROC" ] && is_awaiting "$pane"; then
+        echo "$pane $wname $AWAITING_ICON_ANSI"
       else
-        echo "$pane $name"
+        echo "$pane $wname"
       fi
     done)
   count=$(echo "$matches" | wc -l | tr -d ' ')
   if [ "$count" = "1" ]; then
     echo "$matches" | awk '{print $1}' | xargs tmux switch-client -t
   else
-    echo "$matches" | fzf --reverse --header "$cmd panes ($sess):" \
+    echo "$matches" | fzf --reverse --header "$name panes ($sess):" \
       --ansi --preview 'tmux capture-pane -e -t {1} -p | grep -v "^$"' --preview-window=right,70%,follow \
       | awk '{print $1}' | xargs tmux switch-client -t
   fi
   exit 0
 fi
 
-tmux list-panes -s -t "$sess" -F '#{session_name}:#{window_index}.#{pane_index} #{pane_current_command}' \
-  | grep " ${cmd}$" \
+tmux list-panes -s -t "$sess" -F $'#{session_name}:#{window_index}.#{pane_index}\t#{window_name}' \
+  | awk -F'\t' -v n="$name" '$2 == n' \
   | head -1 \
-  | awk '{print $1}' \
+  | awk -F'\t' '{print $1}' \
   | xargs tmux switch-client -t

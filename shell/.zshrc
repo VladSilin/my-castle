@@ -180,6 +180,7 @@ alias gitpf='git push -f'
 
 alias config-zsh='nvim ~/.zshrc'
 alias config-tmux='nvim ~/.tmux.conf'
+alias ref='~/.tmux/scripts/session-ref.sh'
 
 # Override bare `tmux` to launch the session-create picker
 tmux() {

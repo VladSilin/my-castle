@@ -3,13 +3,14 @@
 󰖯 Window Nav      1-9 jump to window • C-S-Left/Right swap window position
 󰝘 Panes           h/j/k/l vim-style pane switch • z toggle pane zoom
 󰆍 Sessions        S bare session (name only) • N dir → name → commands (hotkey/tab=toggle, enter=confirm)
+󰆍 Ref View        session-ref.sh [name] in new terminal — grouped view, auto-kills on detach
 󰆍 Sessions2       s fuzzy session switcher (ctrl-x=kill) • $ rename session
 󰆍 Session Nav     (/) prev/next session • L last session
 󱁉 Windows2        w fuzzy cross-session window picker • , rename window • & kill window
 󰖯 Move Window     :move-window -t <session> move current window to another session
 󰅂 Copy Mode       [ enter copy mode • v begin selection • y yank to clipboard
 󰚩 Agents          C spawn agent window • > jump to first awaiting agent • m two-step pane finder
-󰚩 Agent Nav       g session-scoped pane jump • m pick command → pick pane with preview
+󰚩 Agent Nav       g session-scoped window jump (by name) • m pick command → pick pane with preview
 󰋼 Popup           Space quick Claude popup (pick dir) • ? this hints popup
 󰁨 Scroll          C-a [ then k/j or C-u/C-d to scroll • q exit copy mode
 󰆼 Misc            d detach • : command prompt • t show clock • x kill pane
