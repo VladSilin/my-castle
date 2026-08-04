@@ -1,0 +1,26 @@
+# Runtime state that lands inside this repo because stow symlinks whole
+# directories: when ~/.vim and ~/.tmux don't already exist as real dirs, stow
+# points them straight at vim/.vim and tmux/.tmux here, so anything a tool
+# writes under them is written into the repo.
+
+# vim-plug clones plugins into ~/.vim/plugged
+vim/.vim/plugged/
+
+# tmux plugins cloned at runtime (tmux-resurrect, per .tmux.conf)
+tmux/.tmux/plugins/
+
+# netrw history
+vim/.vim/.netrwhist
+
+# Undo files. .vimrc sets undodir=~/tmp/undodir, but vim silently falls back to
+# writing these beside the edited file when that directory doesn't exist.
+*.un~
+.*.un~
+
+# Editor scratch
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
