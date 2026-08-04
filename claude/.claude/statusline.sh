@@ -80,6 +80,17 @@ to_int() {
   printf '%s' "$v"
 }
 
+# Same idea for values headed to printf '%.2f', which keeps the fractional
+# part. printf exits non-zero on a non-number ("invalid number"), and that
+# blanks the entire status line. Two ways that happens in practice: an empty
+# stdin payload, which `jq empty` accepts so the invalid-JSON guard misses it,
+# and a monthly cache file that a failed ccusage run left garbage in.
+to_num() {
+  local v="${1:-0}"
+  [[ "$v" =~ ^-?[0-9]+([.][0-9]+)?$ ]] || v=0
+  printf '%s' "$v"
+}
+
 # Compute used tokens from percentage and total
 total="$(to_int "${total//null/200000}")"
 pct_raw="$(to_int "${pct_raw//null/0}")"
@@ -122,11 +133,11 @@ used_fmt="$(format_tokens "$used")"
 total_fmt="$(format_tokens "$total")"
 
 # Format session cost
-cost="${cost//null/0}"
+cost="$(to_num "${cost//null/0}")"
 cost_fmt="$(printf '$%.2f' "$cost")"
 
 # Monthly cost (cached, non-blocking)
-monthly="$(get_monthly_cost)"
+monthly="$(to_num "$(get_monthly_cost)")"
 monthly_fmt="$(printf '$%.2f' "$monthly")"
 
 dim='\033[2m'
