@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Two-step pane finder: pick command type → pick pane with preview
 # Called from tmux bind m via display-popup
 # Marks agent panes with ⧑ if awaiting input (sentinel absent)

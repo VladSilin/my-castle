@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Jump to first agent pane awaiting input, cycling through if already on one
 # Called from tmux bind > via run-shell
 source "$(dirname "$0")/lib.sh"

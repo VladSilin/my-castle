@@ -2,7 +2,15 @@
 
 # Agent
 AGENT_CMD="claude"        # command to invoke
-AGENT_PROC="claude.exe"  # process name tmux sees (Electron binary)
+# Process name tmux reports for a running agent pane. macOS ships the Electron
+# binary (claude.exe); the Linux build reports plain "claude". Every agent
+# feature (status bar, prefix+>, prefix+m) matches on this string, so a wrong
+# value silently means "no agent panes exist".
+if [ "$(uname)" = "Darwin" ]; then
+  AGENT_PROC="claude.exe"
+else
+  AGENT_PROC="claude"
+fi
 SENTINEL="👾"
 SENTINEL_TAIL=5
 

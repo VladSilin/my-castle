@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Create a new session with pre-configured windows
 # Usage: session-create.sh <pane_current_path>
 source "$(dirname "$0")/lib.sh"

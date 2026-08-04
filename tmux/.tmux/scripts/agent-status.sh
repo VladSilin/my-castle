@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Tmux status bar pill: shows agent count and how many are awaiting input
 # Outputs tmux-formatted pill, or nothing if no agent panes
 source "$(dirname "$0")/lib.sh"

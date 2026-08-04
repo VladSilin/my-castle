@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Track fzf toggle selections in order
 # Usage: toggle-track.sh <file> <item>
 # If item is already in file, remove it (untoggle). Otherwise append it.

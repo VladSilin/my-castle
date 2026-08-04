@@ -10,9 +10,12 @@ get_monthly_cost() {
   local now cache_mtime age cached
   now="$(date +%s)"
 
-  # Read cache if fresh enough
+  # Read cache if fresh enough.
+  # `stat -f %m` is BSD; GNU stat spells it `-c %Y`. Without the fallback the
+  # mtime reads as 0 on Linux, the cache always looks stale, and every status
+  # refresh (STATUS_INTERVAL=1) spawns a background `npx ccusage`.
   if [[ -f "$MONTHLY_CACHE" ]]; then
-    cache_mtime="$(stat -f %m "$MONTHLY_CACHE" 2>/dev/null || echo 0)"
+    cache_mtime="$(stat -f %m "$MONTHLY_CACHE" 2>/dev/null || stat -c %Y "$MONTHLY_CACHE" 2>/dev/null || echo 0)"
     age=$(( now - cache_mtime ))
     if (( age < CACHE_MAX_AGE )); then
       cat "$MONTHLY_CACHE"

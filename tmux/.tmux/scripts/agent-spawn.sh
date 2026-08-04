@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Open a new window running an agent with consistent naming
 # Called from tmux bind C via run-shell
 source "$(dirname "$0")/lib.sh"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Session-scoped window jump: pick session → pick window (by name) → jump to it
 # Called from tmux bind g via display-popup
 #

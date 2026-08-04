@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Background watcher: notify when an agent pane finishes and is awaiting input
 source "$(dirname "$0")/lib.sh"
 
@@ -11,6 +11,34 @@ echo $$ > "$PIDFILE"
 
 state_file=$(mktemp)
 trap "rm -f '$state_file' '$PIDFILE'" EXIT
+
+# Announce that $1 is awaiting input. macOS routes through Notification Center
+# and suppresses the alert when the terminal is already frontmost; elsewhere
+# there may be no desktop at all (headless server over SSH), so fall back to
+# notify-send and finally to a tmux status-line message, which always works.
+notify_awaiting() {
+  local pane="$1"
+  if [ "$(uname)" = "Darwin" ]; then
+    local frontapp
+    frontapp=$(osascript -e 'tell application "System Events" to get name of first process whose frontmost is true')
+    [ "$frontapp" = "$TERMINAL_APP" ] && return
+    osascript -e "display notification \"$pane is waiting\" with title \"👾 Agent\" sound name \"Glass\""
+  elif command -v notify-send >/dev/null 2>&1; then
+    notify-send "👾 Agent" "$pane is waiting"
+  else
+    tmux display-message "👾 $pane is waiting"
+  fi
+}
+
+# GNU sed takes the in-place suffix fused to the flag (-i.bak) and treats a
+# separate '' as the script; BSD sed requires it separate. Pick per platform.
+sed_inplace() {
+  if [ "$(uname)" = "Darwin" ]; then
+    sed -i '' "$@"
+  else
+    sed -i "$@"
+  fi
+}
 
 while true; do
   panes=$(list_agent_panes)
@@ -29,15 +57,12 @@ while true; do
 
     # Notify on transition from busy → awaiting (skip if terminal is focused)
     if [ "$prev" = "busy" ] && [ "$state" = "awaiting" ]; then
-      frontapp=$(osascript -e 'tell application "System Events" to get name of first process whose frontmost is true')
-      if [ "$frontapp" != "$TERMINAL_APP" ]; then
-        osascript -e "display notification \"$pane is waiting\" with title \"👾 Agent\" sound name \"Glass\""
-      fi
+      notify_awaiting "$pane"
     fi
 
     # Update state file
     if grep -q "^$pane " "$state_file" 2>/dev/null; then
-      sed -i '' "s|^$pane .*|$pane $state|" "$state_file"
+      sed_inplace "s|^$pane .*|$pane $state|" "$state_file"
     else
       echo "$pane $state" >> "$state_file"
     fi

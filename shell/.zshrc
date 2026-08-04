@@ -112,7 +112,13 @@ source $ZSH/oh-my-zsh.sh
 export COLORTERM=truecolor
 export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
-alias ls='ls -GFh'
+# BSD ls colorizes with -G; GNU ls reads -G as "omit group column" and needs
+# --color=auto instead, so the same alias silently loses color on Linux.
+if [[ "$OSTYPE" == darwin* ]]; then
+  alias ls='ls -GFh'
+else
+  alias ls='ls --color=auto -Fh'
+fi
 
 # Fix for muted colours in Claude Code
 export CLAUDE_CODE_TMUX_TRUECOLOR=1
@@ -156,7 +162,12 @@ fcd() {
 
 # nvim Config
 # The `DBUS_SESSION_BUS_ADDRESS` environment variable must be set for Zathura to work with VimTeX; see [2] for details.
-export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
+# macOS only: $DBUS_LAUNCHD_SESSION_BUS_SOCKET is a launchd thing. On Linux the
+# session bus address is already set by the login session — overriding it with
+# an empty path breaks every dbus client.
+if [[ "$OSTYPE" == darwin* ]]; then
+  export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_LAUNCHD_SESSION_BUS_SOCKET"
+fi
 # [2]: https://github.com/lervag/vimtex/issues/2391
 
 
@@ -204,38 +215,44 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
-# LLVM Stuff
-export LDFLAGS="-L/opt/homebrew/opt/llvm@12/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm@12/include"
+# ---- macOS-only block ----
+# Homebrew paths, the Keychain, xcrun and pmset only exist on the Mac. Guarding
+# the whole block keeps this file usable verbatim on Linux boxes; without it
+# every shell start prints "command not found" for xcrun and security.
+if [[ "$OSTYPE" == darwin* ]]; then
+  # LLVM Stuff
+  export LDFLAGS="-L/opt/homebrew/opt/llvm@12/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/llvm@12/include"
 
-export PATH="/opt/homebrew/opt/llvm@12/bin:/Users/vladsilin/.local/bin:$PATH"
-
-
-# Haskell Stuff
-[ -f "/Users/vladsilin/.ghcup/env" ] && source "/Users/vladsilin/.ghcup/env" # ghcup-envexport PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-
-# Fix the Haskell linter install error with "ffitarget_arm64.h"
-export C_INCLUDE_PATH="`xcrun --show-sdk-path`/usr/include/ffi"
+  export PATH="/opt/homebrew/opt/llvm@12/bin:$HOME/.local/bin:$PATH"
 
 
-# OpenRouter (stored in macOS Keychain)
-export OPENROUTER_API_KEY=$(security find-generic-password -a "$USER" -s openrouter -w)
+  # Haskell Stuff
+  [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
+
+  # Fix the Haskell linter install error with "ffitarget_arm64.h"
+  export C_INCLUDE_PATH="$(xcrun --show-sdk-path)/usr/include/ffi"
 
 
-# Offline access
-subway() {
-    sudo pmset -a disablesleep 1
-    echo "Sleep fully disabled."
-    echo "Now flip Internet Sharing on."
-    open "x-apple.systempreferences:com.apple.Sharing-Settings.extension"
-}
+  # OpenRouter (stored in macOS Keychain)
+  export OPENROUTER_API_KEY=$(security find-generic-password -a "$USER" -s openrouter -w)
 
-subway-off() {
-    sudo pmset -a disablesleep 0
-    echo "Sleep re-enabled."
-    echo "Flip Internet Sharing off."
-    open "x-apple.systempreferences:com.apple.Sharing-Settings.extension"
-}
+
+  # Offline access
+  subway() {
+      sudo pmset -a disablesleep 1
+      echo "Sleep fully disabled."
+      echo "Now flip Internet Sharing on."
+      open "x-apple.systempreferences:com.apple.Sharing-Settings.extension"
+  }
+
+  subway-off() {
+      sudo pmset -a disablesleep 0
+      echo "Sleep re-enabled."
+      echo "Flip Internet Sharing off."
+      open "x-apple.systempreferences:com.apple.Sharing-Settings.extension"
+  }
+fi
 
 
 # ---- SDKMAN (Java / Maven / Gradle version manager) ----

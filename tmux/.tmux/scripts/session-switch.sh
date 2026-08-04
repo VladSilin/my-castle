@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Session switcher with single-char acceleration and ctrl-x to kill
 # Called from tmux bind s via display-popup
 source "$(dirname "$0")/lib.sh"

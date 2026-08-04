@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Open a grouped reference view of an existing session in a new terminal.
 # The grouped session auto-kills on detach — nothing lingers in the session list.
 # Usage: session-ref.sh [session-name]

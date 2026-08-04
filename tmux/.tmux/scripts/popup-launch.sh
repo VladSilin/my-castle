@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Popup launcher: pick dir → pick command → run in popup
 # Usage: popup-launch.sh <pane_current_path>
 source "$(dirname "$0")/lib.sh"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # List sessions with [k] bracket prefixes for unique first-chars
 tmux list-sessions -F '#S' | awk '
   { count[substr($0,1,1)]++; lines[NR]=$0; n=NR }
