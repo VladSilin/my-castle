@@ -108,14 +108,21 @@ pct=$pct_raw
 (( pct <= 100 )) || pct=100
 
 # Color gradient: green → yellow → orange → red
+#
+# All four are explicit 256-color indices rather than the basic ANSI codes
+# (31/32/33). Those basic codes are not colors, they are palette slots each
+# terminal theme defines for itself -- ShellFish and Monokai-family themes
+# render "green" as a chartreuse that reads as yellow, so a 0% status line
+# looked like a warning. Only orange was pinned before, which is why it was
+# the one that always looked right.
 if (( pct >= 90 )); then
-  color='\033[31m'        # red
+  color='\033[38;5;196m'  # red
 elif (( pct >= 71 )); then
   color='\033[38;5;208m'  # orange
 elif (( pct >= 41 )); then
-  color='\033[33m'        # yellow
+  color='\033[38;5;220m'  # yellow
 else
-  color='\033[32m'        # green
+  color='\033[38;5;40m'   # green
 fi
 reset='\033[0m'
 
