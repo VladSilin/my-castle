@@ -11,11 +11,17 @@ get_monthly_cost() {
   now="$(date +%s)"
 
   # Read cache if fresh enough.
-  # `stat -f %m` is BSD; GNU stat spells it `-c %Y`. Without the fallback the
-  # mtime reads as 0 on Linux, the cache always looks stale, and every status
-  # refresh (STATUS_INTERVAL=1) spawns a background `npx ccusage`.
+  # GNU stat spells mtime `-c %Y`, BSD spells it `-f %m`. Try GNU first: BSD
+  # rejects -c with a usage error and no stdout, so the fallback is clean. The
+  # reverse order is NOT safe -- GNU reads `-f %m` as --file-system on a file
+  # named %m, printing a whole "File: ... Blocks: ..." block to STDOUT before
+  # exiting 1, which the fallback then appends its answer to. That garbage
+  # reaching $(( )) is a syntax error, and under `set -u` it aborts the script,
+  # so the status line silently disappears.
+  # The numeric guard makes this independent of which stat emits what.
   if [[ -f "$MONTHLY_CACHE" ]]; then
-    cache_mtime="$(stat -f %m "$MONTHLY_CACHE" 2>/dev/null || stat -c %Y "$MONTHLY_CACHE" 2>/dev/null || echo 0)"
+    cache_mtime="$(stat -c %Y "$MONTHLY_CACHE" 2>/dev/null || stat -f %m "$MONTHLY_CACHE" 2>/dev/null || true)"
+    [[ "$cache_mtime" =~ ^[0-9]+$ ]] || cache_mtime=0
     age=$(( now - cache_mtime ))
     if (( age < CACHE_MAX_AGE )); then
       cat "$MONTHLY_CACHE"
@@ -64,16 +70,31 @@ total="$(echo "$input" | jq -r '.context_window.context_window_size // 200000')"
 pct_raw="$(echo "$input" | jq -r '.context_window.used_percentage // 0')"
 cost="$(echo "$input" | jq -r '.cost.total_cost_usd // 0')"
 
+# Coerce to a plain integer. Claude Code can report used_percentage
+# fractionally (12.7), and bash arithmetic has no floats -- it treats the '.'
+# as a syntax error and aborts. Anything unparseable becomes 0.
+to_int() {
+  local v="${1:-0}"
+  v="${v%%.*}"
+  [[ "$v" =~ ^-?[0-9]+$ ]] || v=0
+  printf '%s' "$v"
+}
+
 # Compute used tokens from percentage and total
-total="${total//null/200000}"
-pct_raw="${pct_raw//null/0}"
-(( total = total > 0 ? total : 200000 ))
-(( pct_raw = pct_raw > 0 ? pct_raw : 0 ))
-(( used = total * pct_raw / 100 ))
+total="$(to_int "${total//null/200000}")"
+pct_raw="$(to_int "${pct_raw//null/0}")"
+
+# Every clamp below is written as `(( test )) || assign` rather than a bare
+# `(( x = ... ))`. A bare arithmetic statement whose result is 0 returns exit
+# status 1, and under `set -e` that kills the script with no output at all --
+# which is what happened at 0% context, i.e. the start of every session.
+(( total > 0 )) || total=200000
+(( pct_raw > 0 )) || pct_raw=0
+used=$(( total * pct_raw / 100 ))
 
 # Percentage
 pct=$pct_raw
-(( pct = pct > 100 ? 100 : pct ))
+(( pct <= 100 )) || pct=100
 
 # Color gradient: green → yellow → orange → red
 if (( pct >= 90 )); then
