@@ -9,3 +9,8 @@ background-blur-radius = 82
 window-padding-color = background
 window-colorspace = srgb
 bold-is-bright = false
+
+# Let tmux running on a remote host write this Mac's clipboard via OSC 52.
+# Only the SSH path needs it — a local tmux copies through pbcopy directly
+# (see ~/.tmux/scripts/copy.sh).
+clipboard-write = allow
