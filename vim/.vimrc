@@ -145,9 +145,16 @@ set autowriteall
 " Keep buffer undo history
 set hidden
 
-" Persistent undo across sessions
+" Persistent undo across sessions.
+" Vim will not create undodir itself: if it's missing it just drops the undo
+" history on exit, with no error and no file left behind, so `set undofile`
+" silently does nothing. Create it here so a freshly cloned dotfiles checkout
+" works without a manual mkdir. 0700 because undo files hold file contents.
 set undofile
 set undodir=~/tmp/undodir
+if !isdirectory(expand(&undodir))
+  call mkdir(expand(&undodir), 'p', 0700)
+endif
 
 
 " netrw (File Tree Browser) Config

@@ -12,12 +12,8 @@ tmux/.tmux/plugins/
 # netrw history
 vim/.vim/.netrwhist
 
-# Undo files. .vimrc sets undodir=~/tmp/undodir, but vim silently falls back to
-# writing these beside the edited file when that directory doesn't exist.
-*.un~
-.*.un~
-
-# Editor scratch
+# Editor scratch. `*~` also covers vim undo files (.name.un~) in the event
+# undodir is ever pointed at '.'; .vimrc keeps them in ~/tmp/undodir instead.
 *.swp
 *.swo
 *~
