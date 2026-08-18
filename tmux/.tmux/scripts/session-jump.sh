@@ -24,9 +24,9 @@ fi
 if [[ "$name" == GLOBAL:* ]]; then
   name="${name#GLOBAL:}"
   name=$(echo "$name" | sed 's/^\[.\] //' | sed 's/ ([0-9]*)$//')
-  matches=$(tmux list-panes -s -t "$sess" -F $'#{session_name}:#{window_index}.#{pane_index}\t#{window_name}\t#{pane_current_command}' \
-    | awk -F'\t' -v n="$name" '$2 == n' | while IFS=$'\t' read -r pane wname pcmd; do
-      if [ "$pcmd" = "$AGENT_PROC" ] && is_awaiting "$pane"; then
+  matches=$(tmux list-panes -s -t "$sess" -F $'#{session_name}:#{window_index}.#{pane_index}\t#{window_name}\t#{pane_current_command}\t#{@agent}' \
+    | awk -F'\t' -v n="$name" '$2 == n' | while IFS=$'\t' read -r pane wname pcmd tag; do
+      if is_agent_pane "$pcmd" "$tag" && is_awaiting "$pane"; then
         echo "$pane $wname $AWAITING_ICON_ANSI"
       else
         echo "$pane $wname"

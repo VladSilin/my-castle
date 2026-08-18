@@ -202,6 +202,41 @@ tmux() {
   fi
 }
 
+# Tag the pane with @agent so the tmux agent-awareness integration can find
+# it (cursor-agent's process shows up as plain "node" in tmux, so it can't
+# be identified by process name the way Claude's Electron binary can — see
+# tmux/.tmux/README.md). Cleared on exit; window reverts to normal
+# automatic-rename behavior.
+#
+# Both `agent` and `cursor-agent` are real, separate symlinks to the same
+# binary (~/.local/bin/agent and ~/.local/bin/cursor-agent) — `agent` is
+# actually the tool's own canonical name (see its --help usage line), so
+# both need wrapping or one silently bypasses tagging entirely.
+#
+# All tmux calls target -t "$TMUX_PANE" explicitly rather than relying on
+# "current window" resolution — that resolves to whatever window the
+# attached client is currently *looking at*, not necessarily this pane's
+# window (verified: a bare `rename-window`/`set-option -w` issued from a
+# background/unfocused pane silently renames/retargets the wrong window).
+_cursor_agent_wrapper() {
+  local cmd="$1"
+  shift
+  if [ -n "$TMUX" ]; then
+    tmux set-option -p -t "$TMUX_PANE" @agent cursor-agent
+    tmux rename-window -t "$TMUX_PANE" cursor-agent
+    tmux set-option -w -t "$TMUX_PANE" automatic-rename off
+  fi
+  command "$cmd" "$@"
+  local rc=$?
+  if [ -n "$TMUX" ]; then
+    tmux set-option -pu -t "$TMUX_PANE" @agent
+    tmux set-option -w -t "$TMUX_PANE" automatic-rename on
+  fi
+  return $rc
+}
+agent() { _cursor_agent_wrapper agent "$@" }
+cursor-agent() { _cursor_agent_wrapper cursor-agent "$@" }
+
 alias config-nvim='cd ~/.config/nvim && nvim'
 alias cd-nvim='cd ~/.config/nvim'
 

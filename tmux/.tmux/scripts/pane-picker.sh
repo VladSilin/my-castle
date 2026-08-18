@@ -8,9 +8,9 @@ cmds=$(tmux list-panes -a -F '#{pane_current_command}' | sort | uniq -c | awk '{
 cmd=$(pick_command "Pick command:" "$cmds") || exit 0
 cmd=$(echo "$cmd" | sed 's/ ([0-9]*)$//')
 
-matches=$(tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{window_name} #{pane_current_command}' \
-  | grep " ${cmd}$" | awk '{print $1, $2, $3}' | while read pane name pcmd; do
-    if [ "$pcmd" = "$AGENT_CMD" ] && is_awaiting "$pane"; then
+matches=$(tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{window_name} #{pane_current_command} #{@agent}' \
+  | awk -v c="$cmd" '$3 == c' | while read -r pane name pcmd tag; do
+    if is_agent_pane "$pcmd" "$tag" && is_awaiting "$pane"; then
       echo "$pane $name $AWAITING_ICON_ANSI"
     else
       echo "$pane $name"

@@ -8,7 +8,7 @@ FALLBACK_DIR="${1:-$HOME}"
 # Config
 BASE_DIR="$PROJECT_DIR"
 EXCLUDE="$SHELL_CMD|bash"
-INCLUDE=("$AGENT_CMD" "shell" "$EDITOR_CMD")
+INCLUDE=("${AGENTS[0]}" "shell" "$EDITOR_CMD")  # primary agent only, not every configured agent
 
 # Step 1 — Pick working directory
 DIR=$(pick_dir "$FALLBACK_DIR") || exit 0

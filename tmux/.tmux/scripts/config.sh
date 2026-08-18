@@ -1,16 +1,23 @@
 # Shared config for tmux scripts
 
-# Agent
-AGENT_CMD="claude"        # command to invoke
-# Process name tmux reports for a running agent pane. macOS ships the Electron
-# binary (claude.exe); the Linux build reports plain "claude". Every agent
-# feature (status bar, prefix+>, prefix+m) matches on this string, so a wrong
-# value silently means "no agent panes exist".
+# Agents recognized by the tmux integration.
+AGENTS=("claude" "cursor-agent")
+
+# Claude's process name is unique — native match, no @agent tag required.
+# macOS reports the Electron binary as claude.exe; Linux reports claude.
+# Ad-hoc `claude` launches (no wrapper, no popup) therefore keep working.
 if [ "$(uname)" = "Darwin" ]; then
-  AGENT_PROC="claude.exe"
+  AGENT_COMM_CLAUDE="claude.exe"
 else
-  AGENT_PROC="claude"
+  AGENT_COMM_CLAUDE="claude"
 fi
+
+# Agents whose process name is ambiguous (node/python, shared by many other
+# tools) are identified only via the @agent tag set by their .zshrc wrapper
+# function — never guessed at from process name. If untagged, the pane is
+# simply not recognized as an agent pane (see tmux/.tmux/README.md
+# "Adding a new agent").
+
 SENTINEL="👾"
 SENTINEL_TAIL=5
 
@@ -32,7 +39,7 @@ PROJECT_DIR="$HOME"
 PROJECT_DEPTH=5
 
 # Popup launcher commands (C-a Space)
-POPUP_CMDS=("$AGENT_CMD" "$EDITOR_CMD" "$SHELL_CMD")
+POPUP_CMDS=("${AGENTS[@]}" "$EDITOR_CMD" "$SHELL_CMD")
 
 # Polling intervals (seconds)
 STATUS_INTERVAL=1      # how often tmux re-evaluates status bar (agent-status.sh)

@@ -43,10 +43,22 @@ is_awaiting() {
   ! tmux capture-pane -t "$pane" -p 2>/dev/null | grep -v '^$' | tail -"$SENTINEL_TAIL" | grep -q "$SENTINEL"
 }
 
+# True if the given pane fields identify an agent pane: either a native
+# match (unique process name, e.g. Claude's Electron binary) or a tagged
+# pane (@agent set by a .zshrc wrapper — required for ambiguous process
+# names like node/python). Never guesses from process name alone.
+# Usage: is_agent_pane <pane_current_command> <agent_tag>
+is_agent_pane() {
+  local pcmd="$1" tag="$2"
+  [ "$pcmd" = "$AGENT_COMM_CLAUDE" ] || [ -n "$tag" ]
+}
+
 # List all agent panes as "session:win.pane" (one per line)
 list_agent_panes() {
-  tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{pane_current_command}' 2>/dev/null \
-    | grep " ${AGENT_PROC}$" | cut -d' ' -f1
+  tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{pane_current_command} #{@agent}' 2>/dev/null \
+    | while read -r pane pcmd tag; do
+        is_agent_pane "$pcmd" "$tag" && echo "$pane"
+      done
 }
 
 # Count agent panes
