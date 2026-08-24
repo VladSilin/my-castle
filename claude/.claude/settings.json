@@ -49,6 +49,15 @@
             "command": "mkdir -p /tmp/claude-hooks; json=$(cat); id=$(printf '%s' \"$json\" | jq -r .session_id); tool=$(printf '%s' \"$json\" | jq -r .tool_name); echo \"$(date +%s) PreToolUse:${tool}\" >> /tmp/claude-hooks/${id}.log"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/sudo-gate.sh"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -107,6 +116,8 @@
   "effortLevel": "xhigh",
   "tui": "default",
   "editorMode": "vim",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true
 }
