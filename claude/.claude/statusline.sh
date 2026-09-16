@@ -33,7 +33,7 @@ get_monthly_cost() {
   # Return stale value (or fallback) immediately
   (
     current_month="$(date +%Y-%m)"
-    monthly="$(npx ccusage monthly --json 2>/dev/null | jq -r --arg m "$current_month" '.monthly[] | select(.period == $m or .month == $m) | .totalCost // 0')"
+    monthly="$(npx ccusage@latest monthly --json 2>/dev/null | jq -r --arg m "$current_month" '.monthly[] | select(.period == $m or .month == $m) | .totalCost // 0')"
     printf '%.2f' "${monthly:-0}" > "$MONTHLY_CACHE"
   ) &
 

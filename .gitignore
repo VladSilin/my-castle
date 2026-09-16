@@ -27,6 +27,7 @@ vim/.vim/.netrwhist
 # (settings.json, statusline.sh) and any files you author by hand (CLAUDE.md).
 /claude/.claude/.last-cleanup
 /claude/.claude/.last-update-result.json
+/claude/.claude/.update.lock
 /claude/.claude/backups/
 /claude/.claude/cache/
 /claude/.claude/file-history/
@@ -42,5 +43,9 @@ vim/.vim/.netrwhist
 /claude/.claude/session-env/
 /claude/.claude/sessions/
 /claude/.claude/shell-snapshots/
-/claude/.claude/skills/
+/claude/.claude/settings.json.backup
+# `skills` is a symlink, so it must not use a trailing slash here.
+/claude/.claude/skills
+/claude/.claude/skills.pre-curation-*/
 /claude/.claude/tasks/
+/claude/.claude/telemetry/
